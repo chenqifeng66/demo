@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import {Message} from "view-design"
 
 Vue.use(VueRouter)
 
@@ -26,7 +27,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     const {token} = JSON.parse(localStorage.getItem('userInfo')) || {}
     if (to.path != '/' && !token) {
-        // this.$Message.success('请先登录')
+        Message.error('请先登录')
         next("/")
     } else {
         next()
