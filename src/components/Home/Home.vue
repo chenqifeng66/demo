@@ -20,7 +20,7 @@
               <img :src="item.imgSrc" />
               <span class="good-title">{{ item.title }}</span>
               <div>
-                <span class="price">¥ {{ item.price }}</span>
+                <span class="price">¥ {{ item.price | fenChange}}</span>
                 <Icon
                   type="ios-add-circle-outline"
                   class="icon-cart"
@@ -62,37 +62,37 @@ export default {
         {
           imgSrc: hat,
           title: "hat 1",
-          price: 50,
+          price: 5001,
         },
         {
           imgSrc: hat,
           title: "hat 2",
-          price: 350,
+          price: 35020,
         },
         {
           imgSrc: hat,
           title: "hat 3",
-          price: 540,
+          price: 54030,
         },
         {
           imgSrc: hat,
           title: "hat 4",
-          price: 530,
+          price: 53099,
         },
         {
           imgSrc: hat,
           title: "hat 5",
-          price: 510,
+          price: 51099,
         },
         {
           imgSrc: hat,
           title: "hat 6",
-          price: 150,
+          price: 15099,
         },
         {
           imgSrc: hat,
           title: "hat 7",
-          price: 520,
+          price: 52099,
         },
       ],
       // 用户信息
@@ -104,11 +104,10 @@ export default {
   components: { Top },
   mounted() {
     this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    let count = 0
-    this.userInfo.cartInfo.forEach((item)=>{
-      count += item.count
-    })
-    this.count = count
+    this.count = this.userInfo.cartInfo.reduce((pre,cur)=>
+    {
+      return pre + cur.count
+  },0)
   },
   methods: {
     // 添加商品到购物车

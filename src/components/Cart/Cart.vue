@@ -18,7 +18,7 @@
                 <Footer class="footer">
                   <div>
                     <span>¥ </span>
-                    <span class="price">{{ item.price }}</span>
+                    <span class="price">{{ item.price | fenChange }}</span>
                   </div>
                   <div class="footer-right">
                     <Icon
@@ -48,7 +48,7 @@
     <div class="settlement-area">
       <div class="money">
         <span>¥ </span>
-        <span class="price">{{ sum }}</span>
+        <span class="price">{{ sum | fenChange }}</span>
       </div>
       <div class="settlement">结算</div>
     </div>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import Top from "@/components/Common/Top.vue"
+import Top from "@/components/Common/Top.vue";
 export default {
   components: {
     Top,
@@ -91,11 +91,9 @@ export default {
   },
   computed: {
     sum() {
-      let sum = 0;
-      this.cartInfo.forEach((item) => {
-        sum += item.price * item.count;
-      });
-      return sum;
+      return this.cartInfo.reduce((pre, cur) => {
+        return pre + cur.count * cur.price
+      },0);
     },
   },
   watch: {

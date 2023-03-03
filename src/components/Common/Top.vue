@@ -1,6 +1,6 @@
 <template>
     <Header>
-        <Menu mode="horizontal" theme="dark" active-name="2" @on-select="selectMenuItem">
+        <Menu mode="horizontal" theme="dark" :active-name="activeName" @on-select="selectMenuItem">
           <div class="layout-nav">
             <MenuItem name="1" to="/home">
               <Icon type="ios-navigate"></Icon>
@@ -35,6 +35,15 @@ export default {
       return {
         // 控制登出对话框的显示与隐藏
            showSignOutModal:false
+      }
+    },
+    computed:{
+      activeName(){
+        if(this.$route.path == '/home'){
+          return "1"
+        }else{
+          return "2"
+        }
       }
     },
     methods:{
