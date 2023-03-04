@@ -15,7 +15,7 @@ import {
     Form,
     Input,
     Button,
-    Poptip, Page, BackTop
+    Poptip, Page, BackTop, Table
 } from 'view-design'
 // 导入 view 样式
 import 'view-design/dist/styles/iview.css';
@@ -40,6 +40,7 @@ Vue.component("Button", Button)
 Vue.component("Poptip", Poptip)
 Vue.component("Page", Page)
 Vue.component("BackTop", BackTop)
+Vue.component("Table", Table)
 
 Vue.prototype.$Message = Message
 

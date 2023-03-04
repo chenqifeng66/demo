@@ -29,7 +29,10 @@ const routes = [
                 component: () => import('@/views/base/cart/Cart.vue')
             }
         ]
-    },
+    }, {
+        path: '/render',
+        component: () => import("@/views/base/render.vue")
+    }
 
 ]
 

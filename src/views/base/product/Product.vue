@@ -251,6 +251,7 @@ export default {
   height: 200px;
   width: 200px;
   cursor: pointer;
+  border-radius: 10px;
 }
 
 .goods-area .good .good-title {

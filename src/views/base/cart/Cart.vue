@@ -139,6 +139,16 @@ export default {
   background: #fff;
 }
 
+.ivu-layout-footer {
+  background: none;
+  padding: 0;
+}
+
+.ivu-layout-header {
+  background: none;
+  padding: 0;
+}
+
 .main {
   padding: 0 200px;
 }
@@ -169,16 +179,18 @@ export default {
   width: 200px;
   height: 200px;
   box-sizing: border-box;
+  background: none;
 }
 
 .cart .ivu-layout-sider img {
   width: 100%;
   height: 100%;
+  border-radius: 10px;
 }
 
 .cart .good .right {
   align-items: flex-start;
-  margin-left: 100px;
+  margin-left: 70px;
 }
 
 .cart .good .right .title {
