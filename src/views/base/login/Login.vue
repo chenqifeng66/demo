@@ -2,23 +2,15 @@
   <div class="container">
     <!-- 登陆表单区域 -->
     <Card>
-        <h1 class="title">Welcome</h1>
-      <Form
-        ref="formInline"
-        :model="formInline"
-        :rules="ruleInline"
-      >
+      <h1 class="title">Welcome</h1>
+      <Form ref="formInline" :model="auth" :rules="ruleInline">
         <FormItem prop="user">
-          <Input type="text" v-model="formInline.user" placeholder="Username">
+          <Input type="text" v-model="auth.email" placeholder="Username">
             <Icon type="ios-person-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
         <FormItem prop="password">
-          <Input
-            type="password"
-            v-model="formInline.password"
-            placeholder="Password"
-          >
+          <Input type="password" v-model="auth.password" placeholder="Password">
             <Icon type="ios-lock-outline" slot="prepend"></Icon>
           </Input>
         </FormItem>
@@ -33,18 +25,17 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
       // 表单信息
-      formInline: {
-        user: "admin",
-        password: "123456",
+      auth: {
+        email: "v.xkxhiwffe@kztl.tr",
+        password: "12345678",
       },
       // 表单验证规则
       ruleInline: {
-        user: [
+        email: [
           {
             required: true,
             message: "Please fill in the user name",
@@ -70,29 +61,25 @@ export default {
   methods: {
     // 登陆提交表单
     handleSubmit(name) {
-        // 验证表单信息
+      // 验证表单信息
       this.$refs[name].validate((valid) => {
         if (valid) {
-            // 保存用户信息到本地
-            if(!localStorage.getItem('userInfo')){
-                const userInfo = {
-                    username:this.formInline.user,
-                    cartInfo:[],
-                    token:"123456123456"
-                }
-  
-                localStorage.setItem('userInfo',JSON.stringify(userInfo))
-            }
-            else{
-              const userInfo = JSON.parse(localStorage.getItem('userInfo'))
-              userInfo['token'] = '123456123456'
-              localStorage.setItem('userInfo',JSON.stringify(userInfo))
-            }
+          // 发起登陆请求
+          this.$api
+            .post("/sign_in", { auth: this.auth })
+            .then(({ data }) => {
+              const authorization = data.jwt;
 
-            this.$router.push('/home')
-            this.$Message.success("Success!");
+              if (authorization) {
+                window.localStorage.setItem("authorization", authorization);
+              }
+
+              this.$router.push("/home");
+              this.$Message.success("登录成功!");
+            })
+            .catch(() => this.$Message.error("用户名或密码错误!"));
         } else {
-          this.$Message.error("Fail!");
+          this.$Message.error("登录失败!");
         }
       });
     },
@@ -116,7 +103,7 @@ export default {
   justify-content: space-around;
 }
 
-.title{
-    margin: 20px 0;
+.title {
+  margin: 20px 0;
 }
 </style>

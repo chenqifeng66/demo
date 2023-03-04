@@ -1,16 +1,24 @@
 <template>
   <div class="layout">
     <Layout>
-      <Top :count="count"></Top>
       <Content class="main">
         <!-- 购物车区域 -->
         <div class="cart">
-          <h1>购物车</h1>
+          <div style="display: flex; align-items: center">
+            <h1>购物车</h1>
+            <Button
+              style="margin-left: 10px"
+              type="primary"
+              @click="showClearConfirm"
+              >清空购物车</Button
+            >
+          </div>
+
           <!-- 购物车信息区域 -->
-          <Card class="good" v-for="(item, index) in cartInfo" :key="index">
+          <Card class="good" v-for="item in carts" :key="item.id">
             <Layout>
               <Sider hide-trigger>
-                <img :src="item.imgSrc" />
+                <img :src="item.image" />
               </Sider>
               <Layout class="right">
                 <Header class="title">{{ item.title }}</Header>
@@ -21,12 +29,14 @@
                     <span class="price">{{ item.price | fenChange }}</span>
                   </div>
                   <div class="footer-right">
-                    <Icon
-                      type="md-trash"
-                      :size="24"
-                      class="icon-delete"
-                      @click="deleteGood(index)"
-                    />
+                    <Poptip
+                      confirm
+                      title="确认删除?"
+                      @on-ok="deleteCartProduct(item.id)"
+                    >
+                      <Icon type="md-trash" :size="24" class="icon-delete" />
+                    </Poptip>
+
                     <InputNumber
                       controls-outside
                       :min="1"
@@ -54,76 +64,57 @@
     </div>
 
     <!-- 删除确认对话框 -->
-    <Modal v-model="showDeleteModal" title="提示" @on-ok="confirmDelete">
-      <p>您确定要删除该商品吗?</p>
+    <Modal v-model="isClearConfirm" title="提示" @on-ok="clearCart">
+      <p>您确定要清空购物车吗?</p>
     </Modal>
   </div>
 </template>
 
 <script>
-import Top from "@/components/Common/Top.vue";
+import { mapMutations, mapState, mapGetters } from "vuex";
 export default {
-  components: {
-    Top,
-  },
-  mounted() {
-    this.userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    this.cartInfo = this.userInfo.cartInfo;
-    let count = 0;
-    this.cartInfo.forEach((item) => {
-      count += item.count;
-    });
-    this.count = count;
-  },
+  mounted() {},
   data() {
     return {
       // 购物车信息
       cartInfo: [],
       // 用户信息
       userInfo: [],
-      // 购物车徽标
-      count: 0,
-      // 控制删除对话框的显示与隐藏
-      showDeleteModal: false,
+      // 控制清空购物车对话框的显示与隐藏
+      isClearConfirm: false,
       // 选中删除商品的索引
       deleteIndex: -1,
     };
   },
   computed: {
+    ...mapState("cart", ["carts"]),
+    ...mapGetters("cart", ["count"]),
     sum() {
       return this.cartInfo.reduce((pre, cur) => {
-        return pre + cur.count * cur.price
-      },0);
-    },
-  },
-  watch: {
-    userInfo: {
-      deep: true,
-      handler(newValue) {
-        let count = 0;
-        newValue.cartInfo.forEach((item) => {
-          count += item.count;
-        });
-        this.count = count;
-      },
+        return pre + cur.count * cur.price;
+      }, 0);
     },
   },
   methods: {
+    ...mapMutations("cart", ["clearCart", "deleteCartProduct"]),
+
     // 保存用户信息到本地
     saveUserInfoToLocal() {
       localStorage.setItem("userInfo", JSON.stringify(this.userInfo));
     },
+
     // 修改购物车商品数量
     numberChange() {
       this.saveUserInfoToLocal();
     },
-    // 显示删除对话框
-    deleteGood(index) {
-      this.showDeleteModal = true;
-      this.deleteIndex = index;
+
+    // 显示清空对话框
+    showClearConfirm() {
+      this.isClearConfirm = true;
     },
+
     // 确认删除
-    confirmDelete() {
+    confirmClearCart() {
       this.userInfo.cartInfo.splice(this.deleteIndex, 1);
       this.saveUserInfoToLocal();
       this.$Message.success("删除成功!");
@@ -133,12 +124,14 @@ export default {
 </script>
 
 <style scoped>
+.ivu-poptip-confirm .ivu-poptip-body .ivu-icon {
+  left: 22% !important;
+}
 .layout {
   background: #f5f7f9;
   position: relative;
   height: 100%;
   min-width: 1800px;
-  margin-bottom: 80px;
 }
 
 .ivu-layout {
@@ -170,6 +163,12 @@ export default {
 .cart .good {
   margin: 10px 0;
   width: 100%;
+}
+
+.cart .ivu-layout-sider {
+  width: 200px;
+  height: 200px;
+  box-sizing: border-box;
 }
 
 .cart .ivu-layout-sider img {
