@@ -6,6 +6,8 @@
       <router-view v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive"></router-view>
+
+    <BackTop :bottom="80" :right="80"></BackTop>
   </div>
 </template>
 
